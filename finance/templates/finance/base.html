@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        {% if user.is_authenticated %}
+            <div class="flex items-center justify-between">
+                <a href="{% url 'dashboard' %}" class="text-white text-lg font-semibold">Dashboard</a>
+                <div class="flex items-center">
+                    <a href="{% url 'transaction_add' %}" class="text-white ml-4">Add Transaction</a>
+                    <a href="{% url 'transaction_list' %}" class="text-white ml-4">View Transactions</a>
+                    <a href="{% url 'goal_add' %}" class="text-white ml-4">Add Goal</a>
+                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white ml-4">Logout</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="flex items-center justify-end">
+                <a href="{% url 'login' %}" class="text-white ml-4">Login</a>
+                <a href="{% url 'register' %}" class="text-white ml-4">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+
+    {% block content %}{% endblock content %}
+
+    {% if messages %}
+    <div id="message-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 w-96 z-50">
+        {% for message in messages %}
+        <div class="bg-{{ message.tags }} text-white p-3 rounded shadow-md mb-2">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <script>
+        // Automatically hide messages after 3 seconds
+        setTimeout(function() {
+            let messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                messageContainer.style.transition = 'opacity 0.5s ease-out';
+                messageContainer.style.opacity = '0';
+                setTimeout(() => messageContainer.remove(), 500); // wait for transition to finish
+            }
+        }, 3000); // 3000 ms = 3 seconds
+    </script>
+</body>
+</html>

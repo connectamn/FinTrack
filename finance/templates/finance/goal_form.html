@@ -1,0 +1,75 @@
+{% extends "finance/base.html" %}
+{% block title %}Create Goal{% endblock title %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-6 rounded-xl shadow-lg">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Create New Goal</h1>
+            <p class="mt-2 text-sm text-gray-600">Set your savings or financial target</p>
+        </div>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Goal Name -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Goal Name</label>
+                <input type="text" name="name" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter goal name">
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Target Amount -->
+            <div>
+                <label for="target_amount" class="block text-sm font-medium text-gray-700">Target Amount</label>
+                <input type="number" name="target_amount" id="target_amount" step="0.01" min="0.01" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your target amount">
+                {% if form.target_amount.errors %}
+                    {% for error in form.target_amount.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Current Amount -->
+             <!--
+            <div>
+                <label for="current_amount" class="block text-sm font-medium text-gray-700">Current Amount</label>
+                <input type="number" name="current_amount" id="current_amount" step="0.01" min="0.00" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter current saved amount">
+                {% if form.current_amount.errors %}
+                    {% for error in form.current_amount.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            -->
+            <!-- Deadline -->
+            <div>
+                <label for="deadline" class="block text-sm font-medium text-gray-700">Deadline</label>
+                <input type="date" name="deadline" id="deadline" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                {% if form.deadline.errors %}
+                    {% for error in form.deadline.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Save Goal
+                </button>
+            </div>
+
+            <!-- Back to Dashboard -->
+            <div class="mt-4 text-center">
+                <a href="{% url 'dashboard' %}" class="text-blue-600 hover:underline">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

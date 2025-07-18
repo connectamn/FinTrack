@@ -1,0 +1,67 @@
+{% extends "finance/base.html" %}
+{% block title %}Register{% endblock title %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Create an Account</h1>
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            
+
+            <!-- Username -->
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" name="username" id="username" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                placeholder="Enter your username" required>
+
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0}}</p>
+                {% endif %}
+                
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4"> 
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                placeholder="Enter your email" required>
+
+                {% if form.email.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0}}</p>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" name="password" id="password" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                placeholder="Enter your password" required>
+
+                {% if form.password.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0}}</p>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-4">
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                placeholder="Confirm your password" required>
+
+                {% if form.confirm_password.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.confirm_password.errors.0}}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Register
+                </button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login here</a></p>
+        </div>
+
+    </div>
+{% endblock content %}
