@@ -119,7 +119,7 @@
 
         <!-- Animated Image -->
         <div class="order-1 lg:order-2 flex justify-center lg:justify-end opacity-0 animate-fade-in-delay-2">
-            <img class="w-full max-w-xl rounded-3xl shadow-2xl transform transition duration-700 ease-in-out hover:scale-105" src="{% static 'logo.png' %}" alt="FinTrack Financial Interface">
+            <img class="w-100 md:w-100 h-auto rounded-3xl shadow-2xl transform transition duration-700 ease-in-out hover:scale-105" src="{% static 'logo.png' %}" alt="FinTrack Financial Interface">
         </div>
     </div>
 </section>
@@ -183,21 +183,33 @@
     <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
         <!-- Step 1 -->
         <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
-            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">1️⃣</div>
-            <h3 class="text-2xl font-bold text-gray-800">Create Your Account</h3>
-            <p class="mt-2 text-gray-600">Sign up in minutes with your email and a strong password. It's completely free!</p>
+            <div class="flex items-start gap-4">
+                <div class="text-5xl md:text-6xl text-purple-500 leading-none">1</div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 text-left">Create Your Account</h3>
+                    <p class="mt-2 text-gray-600 text-left">Sign up in minutes with your email and a strong password. It's completely free!</p>
+                </div>
+            </div>
         </div>
         <!-- Step 2 -->
         <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
-            <div class="text-6xl text-teal-500 mb-4 flex justify-center items-center">2️⃣</div>
-            <h3 class="text-2xl font-bold text-gray-800">Log Your Transactions</h3>
-            <p class="mt-2 text-gray-600">Quickly add your income and expenses. Categorize them for clear insights.</p>
+            <div class="flex items-start gap-4">
+                <div class="text-5xl md:text-6xl text-teal-500 leading-none">2</div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 text-left">Log Your Transactions</h3>
+                    <p class="mt-2 text-gray-600 text-left">Quickly add your income and expenses. Categorize them for clear insights.</p>
+                </div>
+            </div>
         </div>
         <!-- Step 3 -->
         <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
-            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">3️⃣</div>
-            <h3 class="text-2xl font-bold text-gray-800">Track & Plan</h3>
-            <p class="mt-2 text-gray-600">View your financial health, set goals, and receive smart tips to improve your habits.</p>
+            <div class="flex items-start gap-4">
+                <div class="text-5xl md:text-6xl text-purple-500 leading-none">3</div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 text-left">Track & Plan</h3>
+                    <p class="mt-2 text-gray-600 text-left">View your financial health, set goals, and receive smart tips to improve your habits.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
