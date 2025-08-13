@@ -3,54 +3,178 @@
 {% block title %}Dashboard{% endblock title %}
 
 {% block content %}
-<div class="container mx-auto p-6">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-indigo-600">Welcome to your Finance Dashboard</h1>
-        <h1 class="text-2xl font-bold text-gray-800">{{ request.user|capfirst }}</h1>
-    </div>
-    <p class="text-xl text-gray-700 mb-6">Track your income, expenses, and goals effectively.</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold text-gray-800">Total Income</h2>
-            <p class="text-2xl text-green-600">৳{{ total_income|floatformat:2 }}</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold text-gray-800">Total Expense</h2>
-            <p class="text-2xl text-red-600">৳{{ total_expense| floatformat:2 }}</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold text-gray-800">Net Balance</h2>
-            <p class="text-2xl text-blue-600">৳{{ net_balance|floatformat:2 }}</p>
+
+<div class="container mx-auto p-6 lg:p-10 rounded-xl shadow-2xl dashboard-container mt-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+        <h1 class="text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-0">Welcome to your Finance Dashboard</h1>
+        <div class="text-right">
+            <h1 class="text-2xl lg:text-3xl font-bold text-teal-400">{{ request.user.get_full_name }}</h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400">@{{ request.user.username }}</p>
         </div>
     </div>
+    <p class="text-xl text-gray-700 dark:text-gray-300 mb-10 text-center sm:text-left">Track your income, expenses, and financial goals with clarity.</p>
 
-    <div class="bg-white p-6 rounded-lg shadow mb-8">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Goals Progress</h2>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div class="dashboard-card p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Total Income</h2>
+            <p class="text-3xl font-bold text-green-400">৳{{ total_income|floatformat:2 }}</p>
+        </div>
+        <div class="dashboard-card p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Total Expense</h2>
+            <p class="text-3xl font-bold text-red-400">৳{{ total_expenses|floatformat:2 }}</p>
+        </div>
+        <div class="dashboard-card p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Net Balance</h2>
+            <p class="text-3xl font-bold text-blue-400">৳{{ balance|floatformat:2 }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card p-6 rounded-lg shadow-lg mb-12">
+        <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-6">Spending Overview</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div>
+                <h3 class="text-lg font-medium text-gray-600 dark:text-gray-300 mb-3">Expenses by Category</h3>
+                {% if expense_breakdown.labels %}
+                    <div class="w-full max-w-md">
+                        <canvas id="expensePieChart" height="160"></canvas>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mt-3">
+                        Top category: <span class="font-semibold text-red-300">{{ top_expense_category }}</span>
+                        (<span class="text-red-400">৳{{ top_expense_amount|floatformat:2 }}</span>)
+                    </p>
+
+                    {{ expense_breakdown.labels|json_script:"expense-breakdown-labels" }}
+                    {{ expense_breakdown.data|json_script:"expense-breakdown-data" }}
+                {% else %}
+                    <p class="text-gray-500 dark:text-gray-400">No expense data available yet.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <h3 class="text-lg font-medium text-gray-600 dark:text-gray-300 mb-3">Monthly Expense (Last 12 Months)</h3>
+                {% if monthly_expenses.labels %}
+                    <div class="w-full max-w-md">
+                        <canvas id="monthlyExpenseBar" height="160"></canvas>
+                    </div>
+
+                    {{ monthly_expenses.labels|json_script:"monthly-expense-labels" }}
+                    {{ monthly_expenses.data|json_script:"monthly-expense-data" }}
+                {% else %}
+                    <p class="text-gray-500 dark:text-gray-400">No monthly expense data available yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            (function() {
+                // Pie chart
+                const pieLabelsEl = document.getElementById('expense-breakdown-labels');
+                const pieDataEl = document.getElementById('expense-breakdown-data');
+                if (pieLabelsEl && pieDataEl && document.getElementById('expensePieChart')) {
+                    const labels = JSON.parse(pieLabelsEl.textContent);
+                    const data = JSON.parse(pieDataEl.textContent);
+                    const ctx = document.getElementById('expensePieChart').getContext('2d');
+                    const baseColors = ['#EF4444','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#14B8A6','#F97316','#84CC16','#06B6D4'];
+                    const backgroundColors = labels.map((_, i) => baseColors[i % baseColors.length]);
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: { labels, datasets: [{ data, backgroundColor: backgroundColors, borderColor: '#1F2937', borderWidth: 1 }] },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { position: 'bottom', labels: { color: '#E5E7EB' } }, tooltip: { callbacks: { label: (c) => `${c.label}: ৳${Number(c.raw||0).toFixed(2)}` } } }
+                        }
+                    });
+                }
+
+                // Bar chart
+                const barLabelsEl = document.getElementById('monthly-expense-labels');
+                const barDataEl = document.getElementById('monthly-expense-data');
+                if (barLabelsEl && barDataEl && document.getElementById('monthlyExpenseBar')) {
+                    const labels = JSON.parse(barLabelsEl.textContent);
+                    const data = JSON.parse(barDataEl.textContent);
+                    const ctx = document.getElementById('monthlyExpenseBar').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: { labels, datasets: [{ label: 'Expense', data, backgroundColor: 'rgba(239,68,68,0.5)', borderColor: 'rgba(239,68,68,1)', borderWidth: 1, borderRadius: 4 }] },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: { ticks: { color: '#E5E7EB', maxRotation: 45, minRotation: 45 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+                                y: { ticks: { color: '#E5E7EB', callback: (v) => '৳' + v }, grid: { color: 'rgba(255,255,255,0.06)' } }
+                            },
+                            plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `৳${Number(c.raw||0).toFixed(2)}` } } }
+                        }
+                    });
+                }
+            })();
+        </script>
+    </div>
+
+    <div class="dashboard-card p-6 rounded-lg shadow-lg mb-12">
+        <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-6">Goals Progress</h2>
         {% if goal_progress %}
-            <ul class="space-y-4">
+            <ul class="space-y-6">
                 {% for item in goal_progress %}
-                    <li class="flex justify-between items-center">
-                        <div class="text-gray-800">
-                            <p class="font-semibold">{{ item.goal.name }}</p>
-                            <p class="text-sm text-gray-600">Target: ৳{{ item.goal.target_amount|floatformat:2 }}</p>
-                            <p class="text-sm text-gray-500">Deadline: {{ item.goal.deadline }}</p>
+                    <li class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-100 dark:bg-gray-800/50 rounded-md">
+                        <div class="text-gray-700 dark:text-gray-100 mb-2 sm:mb-0">
+                            <p class="font-bold text-lg text-gray-900 dark:text-white">{{ item.goal.name }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Target: ৳{{ item.goal.target_amount|floatformat:2 }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Deadline: {{ item.goal.deadline }}</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xl font-semibold text-gray-800">{{ item.progress|floatformat:2 }}%</p>
+                        <div class="text-right w-full sm:w-auto">
+                            <p class="text-2xl font-bold text-purple-400">{{ item.progress|floatformat:2 }}%</p>
+                            <!-- Optional: Add a simple progress bar -->
+                            <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2.5 mt-2">
+                                <div class="progress-bar-fill h-2.5 rounded-full" style="width: {{ item.progress }}%;"></div>
+                            </div>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="text-gray-600">No goals set yet.</p>
+            <p class="text-gray-500 dark:text-gray-400 text-center py-4">No financial goals set yet. Start by adding one!</p>
         {% endif %}
     </div>
 
-    <div class="text-center">
-        <a href="{% url 'goal_add' %}" class="bg-indigo-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-600 transition">
-            Add New Goal
+    <div class="text-center mt-10 flex flex-col sm:flex-row justify-center gap-6">
+        <!-- Add New Goal -->
+        <a href="{% url 'goal_add' %}"
+           class="inline-flex items-center justify-center bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg px-6 py-3 mx-auto sm:mx-0"
+           title="Add New Goal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8" />
+            </svg>
+            <span>Add Goal</span>
+        </a>
+        <!-- Add New Transaction -->
+        <a href="{% url 'transaction_add' %}"
+           class="inline-flex items-center justify-center bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg px-6 py-3 mx-auto sm:mx-0"
+           title="Add New Transaction">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="4" y="4" width="16" height="16" rx="4" stroke-width="2"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8" />
+            </svg>
+            <span>Add Transaction</span>
+        </a>
+        <!-- View All Transactions -->
+        <a href="{% url 'transaction_list' %}"
+           class="inline-flex items-center justify-center bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg px-6 py-3 mx-auto sm:mx-0"
+           title="View All Transactions">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="4" y="7" width="16" height="13" rx="2" stroke-width="2"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3h8M12 3v4" />
+            </svg>
+            <span>View Transactions</span>
         </a>
     </div>
+
+
+
 </div>
+<script src="//unpkg.com/alpinejs" defer></script>
 {% endblock content %}

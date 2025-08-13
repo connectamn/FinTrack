@@ -1,0 +1,4 @@
+Django==5.2.4
+django-import-export==3.3.4
+openpyxl==3.1.2
+Pillow==11.3.0

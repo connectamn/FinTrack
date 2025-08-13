@@ -1,87 +1,178 @@
 {% extends "finance/base.html" %}
 {% block title %}Add Transaction{% endblock title %}
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8 bg-white p-6 rounded-xl shadow-lg">
+<style>
+    /* Animated gradient background - Consistent with Dashboard & Transaction List */
+    body {
+        background: linear-gradient(-45deg, #1A202C, #2D3748, #1A202C, #4A5568); /* Deeper, subtle dark gradient */
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite; /* Slightly slower and smoother animation */
+        color: #E2E8F0; /* Light text for better contrast on dark background */
+    }
+
+    @keyframes gradientShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    /* Animated dotted overlay with reduced opacity for subtlety - Consistent with Dashboard & Transaction List */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px); /* More subtle white dots */
+        background-size: 25px 25px; /* Slightly larger dots for softer effect */
+        z-index: -1;
+        animation: moveDots 15s linear infinite; /* Slower dot movement */
+        opacity: 0.15; /* Increased opacity slightly for visibility, still subtle */
+    }
+
+    @keyframes moveDots {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 500px 500px; /* Larger movement range */
+        }
+    }
+
+    /* Form container styling */
+    .form-card {
+        background-color: rgba(31, 41, 55, 0.7); /* Darker, slightly transparent background */
+        backdrop-filter: blur(5px); /* Subtle blur effect */
+        border: 1px solid rgba(75, 85, 99, 0.5); /* Soft border */
+    }
+
+    /* Input and Select field styling */
+    .form-input {
+        background-color: rgba(55, 65, 81, 0.5); /* Darker input background */
+        color: #E2E8F0; /* Light text color */
+        border-color: rgba(75, 85, 99, 0.7); /* Soft border color */
+    }
+    .form-input::placeholder {
+        color: #9CA3AF; /* Lighter placeholder text */
+    }
+    .form-input:focus {
+        border-color: #6366F1; /* Indigo focus ring */
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); /* Subtle focus shadow */
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 form-card p-8 rounded-xl shadow-2xl">
         <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Add New Transaction</h1>
-            <p class="mt-2 text-sm text-gray-600">Record your income or expense</p>
+            <h1 class="text-3xl font-extrabold text-white">Add New Transaction</h1>
+            <p class="mt-2 text-md text-gray-300">Record your income or expense quickly.</p>
         </div>
         <form method="post" class="space-y-6">
             {% csrf_token %}
 
             <!-- Title field -->
             <div>
-                <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                <input type="text" name="title" id="title" maxlength="100" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter transaction title">
+                <label for="title" class="block text-sm font-medium text-gray-200 mb-1">Title</label>
+                <input type="text" name="title" id="title" maxlength="100" required
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="e.g., Monthly Salary, Groceries, Rent"
+                       value="{{ form.title.value|default:'' }}">
                 {% if form.title.errors %}
                     {% for error in form.title.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Amount field -->
             <div>
-                <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
-                <input type="number" name="amount" id="amount" step="0.01" min="0.01" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter transaction amount">
+                <label for="amount" class="block text-sm font-medium text-gray-200 mb-1">Amount</label>
+                <input type="number" name="amount" id="amount" step="0.01" min="0.01" required
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="e.g., 50000.00"
+                       value="{{ form.amount.value|default:'' }}">
                 {% if form.amount.errors %}
                     {% for error in form.amount.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Transaction Type -->
             <div>
-                <label for="transaction_type" class="block text-sm font-medium text-gray-700">Transaction Type</label>
-                <select name="transaction_type" id="transaction_type" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    <option value="" disabled selected>Select type</option>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
+                <label for="transaction_type" class="block text-sm font-medium text-gray-200 mb-1">Transaction Type</label>
+                <select name="transaction_type" id="transaction_type" required
+                        class="mt-1 block w-full p-3 border rounded-md form-input
+                               focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="" disabled {% if not form.transaction_type.value %}selected{% endif %} class="text-gray-400">Select type</option>
+                    <option value="income" {% if form.transaction_type.value == 'income' %}selected{% endif %}>Income</option>
+                    <option value="expense" {% if form.transaction_type.value == 'expense' %}selected{% endif %}>Expense</option>
                 </select>
                 {% if form.transaction_type.errors %}
                     {% for error in form.transaction_type.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Date field -->
             <div>
-                <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                <input type="date" name="date" id="date" required max="{% now 'Y-m-d' %}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <label for="date" class="block text-sm font-medium text-gray-200 mb-1">Date</label>
+                <input type="date" name="date" id="date" required max="{% now 'Y-m-d' %}"
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       value="{{ form.date.value|default:today }}">
                 {% if form.date.errors %}
                     {% for error in form.date.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Category field -->
             <div>
-                <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                <input type="text" name="category" id="category" maxlength="50" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter transaction category">
+                <label for="category" class="block text-sm font-medium text-gray-200 mb-1">Category</label>
+                <select name="category" id="category" required
+                        class="mt-1 block w-full p-3 border rounded-md form-input
+                               focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="" disabled {% if not form.category.value %}selected{% endif %} class="text-gray-400">Select category</option>
+                    <option value="Food" {% if form.category.value == "Food" %}selected{% endif %}>Food</option>
+                    <option value="Housing & Utilities" {% if form.category.value == "Housing & Utilities" %}selected{% endif %}>Housing & Utilities</option>
+                    <option value="Transportation" {% if form.category.value == "Transportation" %}selected{% endif %}>Transportation</option>
+                    <option value="Groceries" {% if form.category.value == "Groceries" %}selected{% endif %}>Groceries</option>
+                    <option value="Personal & Health" {% if form.category.value == "Personal & Health" %}selected{% endif %}>Personal & Health</option>
+                    <option value="Education & Learning" {% if form.category.value == "Education & Learning" %}selected{% endif %}>Education & Learning</option>
+                    <option value="Entertainment & Leisure" {% if form.category.value == "Entertainment & Leisure" %}selected{% endif %}>Entertainment & Leisure</option>
+                    <option value="Debt & Financial Obligations" {% if form.category.value == "Debt & Financial Obligations" %}selected{% endif %}>Debt & Financial Obligations</option>
+                    <option value="Savings & Investments" {% if form.category.value == "Savings & Investments" %}selected{% endif %}>Savings & Investments</option>
+                    <option value="Miscellaneous" {% if form.category.value == "Miscellaneous" %}selected{% endif %}>Miscellaneous</option>
+                </select>
                 {% if form.category.errors %}
                     {% for error in form.category.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Submit button -->
             <div class="mt-6">
-                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button type="submit"
+                        class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-lg
+                               hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                               focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">
                     Add Transaction
                 </button>
             </div>
 
             <!-- Back to Dashboard link -->
-            <div class="mt-4 text-center">
-                <a href="{% url 'dashboard' %}" class="text-blue-600 hover:underline">Back to Dashboard</a>
+            <div class="mt-8 text-center">
+                <a href="{% url 'dashboard' %}"
+                   class="text-blue-400 hover:text-blue-300 hover:underline transition-colors duration-200 text-lg">
+                    ← Back to Dashboard
+                </a>
             </div>
         </form>
     </div>

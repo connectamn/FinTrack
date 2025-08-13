@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>FinEXP | Smart Finance Management</title>
+    <!-- Page-specific Styles and Animations -->
+    <style>
+        /* Main Background Gradient for the body */
+        body {
+            background-color: #f8fafc; /* Light gray fallback */
+            background-image: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%); /* Soft blue diagonal gradient */
+            background-size: 400% 400%; /* Needed for gradientShift animation */
+            animation: gradientShift 20s ease infinite; /* Slower, smoother gradient animation */
+            color: #1f2937; /* Dark gray for general text for good contrast */
+        }
+
+        /* Animated Dotted Overlay using a pseudo-element */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Subtle dark dots on the light background */
+            background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+            background-size: 25px 25px; /* Slightly larger dots for softer effect */
+            z-index: -1; /* Ensure it stays behind content */
+            animation: moveDots 15s linear infinite; /* Slower dot movement for subtlety */
+            opacity: 0.15; /* Adjust opacity for desired visibility */
+        }
+
+        /* Animation for the main background gradient */
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Animation for the moving dots overlay */
+        @keyframes moveDots {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 500px 500px; /* Larger movement range */
+            }
+        }
+
+        /* Keyframe for fade-in effect */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Apply fade-in to hero text and buttons */
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .animate-fade-in-delay-1 { animation: fadeIn 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .animate-fade-in-delay-2 { animation: fadeIn 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* Hover effect for cards */
+        .card-lift-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Testimonial slide animation */
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; } /* Fully visible quickly */
+            90% { opacity: 1; } /* Stay visible */
+            100% { opacity: 0; } /* Fade out */
+        }
+        .testimonial-slide-active {
+            animation: fadeInOut 6s ease-in-out forwards; /* Each slide lasts 6s */
+        }
+        .testimonial-slide {
+            opacity: 0;
+            position: absolute; /* Position slides on top of each other */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex; /* Use flex to center content within the slide */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section: Dynamic Introduction -->
+<section class="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div class="relative max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Text Content -->
+        <div class="order-2 lg:order-1 text-center lg:text-left">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight animate-fade-in">
+                Unlock Your Financial Potential.
+            </h1>
+            <p class="mt-4 text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 animate-fade-in-delay-1">
+                FinEXP simplifies money management, helping you track expenses, set goals, and gain crystal-clear insights into your wealth.
+            </p>
+            <div class="mt-10 flex justify-center lg:justify-start space-x-4 animate-fade-in-delay-2">
+                <a href="{% url 'register' %}" class="bg-purple-600 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105">
+                    Start for Free
+                </a>
+                <a href="{% url 'login' %}" class="text-purple-600 font-bold py-4 px-10 rounded-full hover:bg-purple-50 transition duration-300 ease-in-out transform hover:scale-105">
+                    Log In
+                </a>
+            </div>
+        </div>
+
+        <!-- Animated Image -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end opacity-0 animate-fade-in-delay-2">
+            <img class="w-full max-w-xl rounded-3xl shadow-2xl transform transition duration-700 ease-in-out hover:scale-105" src="{% static 'logo.png' %}" alt="FinEXP Financial Interface">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section: Detailed Benefits -->
+<section class="mt-24 py-16 px-4 sm:px-6 lg:px-8 bg-white rounded-3xl shadow-xl max-w-7xl mx-auto">
+    <div class="text-center">
+        <h2 class="text-4xl font-bold text-gray-900">Why FinEXP Stands Out</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Experience financial clarity and control with features designed to simplify your money journey.
+        </p>
+    </div>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature Card 1 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">📊</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Intuitive Dashboards</h3>
+            <p class="mt-2 text-gray-600 text-center">Visualize your finances with beautiful, easy-to-understand charts and summaries.</p>
+        </div>
+        <!-- Feature Card 2 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-teal-500 mb-4 flex justify-center items-center">💸</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Smart Expense Tracking</h3>
+            <p class="mt-2 text-gray-600 text-center">Effortlessly log transactions, categorize them, and gain instant insights into your spending habits.</p>
+        </div>
+        <!-- Feature Card 3 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">🎯</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Personalized Goal Setting</h3>
+            <p class="mt-2 text-gray-600 text-center">Set and track financial goals like saving for a down payment or vacation with clear progress indicators.</p>
+        </div>
+        <!-- Feature Card 4 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-teal-500 mb-4 flex justify-center items-center">🔒</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Unwavering Security</h3>
+            <p class="mt-2 text-gray-600 text-center">Your data is protected with industry-leading encryption, ensuring your financial privacy.</p>
+        </div>
+        <!-- Feature Card 5 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">⏰</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Recurring Transaction Management</h3>
+            <p class="mt-2 text-gray-600 text-center">Easily manage recurring bills and subscriptions, so you never miss a payment.</p>
+        </div>
+        <!-- Feature Card 6 -->
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-teal-500 mb-4 flex justify-center items-center">💡</div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center">Actionable Insights</h3>
+            <p class="mt-2 text-gray-600 text-center">Receive smart recommendations to optimize your spending and boost your savings.</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="mt-24 py-16 px-4 sm:px-6 lg:px-8 bg-purple-50 rounded-3xl shadow-xl max-w-7xl mx-auto">
+    <div class="text-center">
+        <h2 class="text-4xl font-bold text-gray-900">How FinEXP Works</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Getting started with FinEXP is simple and straightforward. Follow these easy steps to take control of your finances.
+        </p>
+    </div>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <!-- Step 1 -->
+        <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">1️⃣</div>
+            <h3 class="text-2xl font-bold text-gray-800">Create Your Account</h3>
+            <p class="mt-2 text-gray-600">Sign up in minutes with your email and a strong password. It's completely free!</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-teal-500 mb-4 flex justify-center items-center">2️⃣</div>
+            <h3 class="text-2xl font-bold text-gray-800">Log Your Transactions</h3>
+            <p class="mt-2 text-gray-600">Quickly add your income and expenses. Categorize them for clear insights.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="p-8 bg-white rounded-2xl shadow-md card-lift-effect transition duration-300">
+            <div class="text-6xl text-purple-500 mb-4 flex justify-center items-center">3️⃣</div>
+            <h3 class="text-2xl font-bold text-gray-800">Track & Plan</h3>
+            <p class="mt-2 text-gray-600">View your financial health, set goals, and receive smart tips to improve your habits.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonial Section: Building Trust with Animated Slides -->
+<section class="mt-24 py-16 px-4 max-w-5xl mx-auto">
+    <div class="relative bg-purple-600 text-white rounded-3xl shadow-2xl p-12 lg:p-16 text-center overflow-hidden h-[300px] flex items-center justify-center">
+        <div id="testimonial-carousel" class="w-full h-full relative">
+            <div class="testimonial-slide" data-index="0">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “FinEXP is a game-changer! I used to dread managing my money, but now I actually enjoy it. The insights are incredible, and I've finally hit my savings goals!”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Israt., Empowered User</div>
+            </div>
+            <div class="testimonial-slide" data-index="1">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “The best financial app I've ever used. Simple, intuitive, and truly helps you understand where your money goes. Highly recommended!”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Raisa., Savvy Investor</div>
+            </div>
+            <div class="testimonial-slide" data-index="2">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “I appreciate the security and privacy. With FinEXP, I feel confident my financial data is safe while I track my progress towards financial freedom.”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Opsory., Secure User</div>
+            </div>
+            <div class="testimonial-slide" data-index="3">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “FinEXP's goal tracking feature is fantastic! It keeps me motivated and on track with my financial objectives. A must-have for anyone serious about saving.”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Jilany., Goal Achiever</div>
+            </div>
+            <div class="testimonial-slide" data-index="4">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “Managing multiple income streams and expenses used to be a headache. FinEXP makes it so easy to categorize and get a clear picture of my cash flow. Love it!”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Selim., Organized User</div>
+            </div>
+            <div class="testimonial-slide" data-index="5">
+                <blockquote class="text-2xl lg:text-3xl font-semibold leading-relaxed relative z-10">
+                    “The insights provided by FinEXP are incredibly valuable. It's not just a tracking app; it's a financial coach in my pocket, helping me make better decisions.”
+                </blockquote>
+                <div class="mt-6 font-bold text-xl relative z-10">- Sayem., Insightful User</div>
+            </div>
+        </div>
+
+        <!-- Carousel Navigation Dots - Dynamically generated by JS -->
+        <div id="carousel-dots-container" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+            {# Dots will be inserted here by JavaScript #}
+        </div>
+    </div>
+</section>
+
+<!-- Final Call to Action Section -->
+<section class="bg-teal-500 py-20 text-center mt-24 rounded-3xl shadow-xl">
+    <div class="max-w-4xl mx-auto px-4 animate-fade-in">
+        <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight">Ready to Take Control of Your Financial Future?</h2>
+        <p class="text-lg mt-4 text-white text-opacity-80">
+            Join the FinEXP community today and experience the simplicity of smart money management.
+        </p>
+        <div class="mt-10">
+            <a href="{% url 'register' %}" class="bg-white text-teal-600 font-bold py-4 px-12 rounded-full shadow-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105">
+                Sign Up for Free Today
+            </a>
+            <p class="mt-3 text-sm text-white text-opacity-70">No credit card required. Start your journey in minutes.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-6 mt-16">
+    <div class="text-center text-sm">
+        &copy; {{ now|date:"Y" }} FinEXP. All rights reserved. | Built with 💙 using Django & Tailwind CSS
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('testimonial-carousel');
+        const slides = Array.from(carousel.querySelectorAll('.testimonial-slide'));
+        const dotsContainer = document.getElementById('carousel-dots-container');
+        let currentIndex = 0;
+        let slideInterval;
+
+        // Dynamically create dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.classList.add('carousel-dot', 'w-3', 'h-3', 'rounded-full', 'bg-white', 'bg-opacity-50', 'hover:bg-opacity-80', 'transition', 'duration-300');
+            dot.dataset.dotIndex = i;
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot')); // Re-select dots after creation
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('testimonial-slide-active');
+                slide.style.opacity = '0';
+                slide.style.zIndex = '10'; // Reset z-index
+                if (i === index) {
+                    slide.classList.add('testimonial-slide-active');
+                    slide.style.zIndex = '20'; // Bring active slide to front
+                    slide.style.opacity = '1'; // Ensure it's visible while animating
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('bg-opacity-50');
+                    dot.classList.add('bg-opacity-100');
+                } else {
+                    dot.classList.add('bg-opacity-50');
+                    dot.classList.remove('bg-opacity-100');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        function startCarousel() {
+            // Show the first slide immediately
+            showSlide(currentIndex);
+            // Set interval for automatic sliding
+            slideInterval = setInterval(nextSlide, 6000); // 6 seconds per slide (matches animation duration)
+        }
+
+        function resetCarouselInterval() {
+            clearInterval(slideInterval);
+            startCarousel();
+        }
+
+        // Event listeners for dots
+        dots.forEach(dot => {
+            dot.addEventListener('click', (event) => {
+                const dotIndex = parseInt(event.target.dataset.dotIndex);
+                currentIndex = dotIndex;
+                showSlide(currentIndex);
+                resetCarouselInterval(); // Reset interval on manual interaction
+            });
+        });
+
+        // Start the carousel when the page loads
+        startCarousel();
+    });
+</script>
+
+</body>
+</html>

@@ -1,36 +1,118 @@
 {% extends "finance/base.html" %}
 {% block title %}Transaction List{% endblock title %}
 {% block content %}
-<a href="{% url 'export_transactions' %}" class="ml-4 my-4 inline-block px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"> Generate Report </a>
-<h1 class="text-3xl font-bold mb-6 text-center">Welcome to the Transaction List</h1>
-<table class="min-w-full table-auto border-collapse border border-gray-300">
-    <thead>
-        <tr class="bg-gray-100">
-            <th class="py-2 px-4 border-border-gray-300">ID</th>
-            <th class="py-2 px-4 border-border-gray-300">Date</th>
-            <th class="py-2 px-4 border-border-gray-300">Title</th>
-            <th class="py-2 px-4 border-border-gray-300">Amount</th>
-            <th class="py-2 px-4 border-border-gray-300">Type</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for transaction in transactions %}
-    <tr class="hover:bg-gray-50">
-        <td class="py-2 px-4 border border-gray-300">{{ transaction.id }}</td>
-        <td class="py-2 px-4 border border-gray-300">{{ transaction.date }}</td>
-        <td class="py-2 px-4 border border-gray-300">{{ transaction.title }}</td>
-        <td class="py-2 px-4 border border-gray-300">{{ transaction.amount|floatformat:2 }}</td>
-       <!-- <td class="py-2 px-4 border border-gray-300">{{ transaction.transaction_type }}</td> -->
-        <!-- Display 'Credit' for income and 'Debit' for expense -->
-        <td class="py-2 px-4 border border-gray-300">
-            {% if transaction.transaction_type == 'Income' %}
-                Credit
-            {% else %}
-                Debit
-            {% endif %}
-        </td>
-    </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<style>
+    /* Animated gradient background */
+    body {
+        background: linear-gradient(-45deg, #1A202C, #2D3748, #1A202C, #4A5568); /* Deeper, subtle dark gradient */
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite; /* Slightly slower and smoother animation */
+        color: #E2E8F0; /* Light text for better contrast on dark background */
+    }
+
+    @keyframes gradientShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    /* Animated dotted overlay with reduced opacity for subtlety */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px); /* More subtle white dots */
+        background-size: 25px 25px; /* Slightly larger dots for softer effect */
+        z-index: -1;
+        animation: moveDots 15s linear infinite; /* Slower dot movement */
+        opacity: 0.15; /* Increased opacity slightly for visibility, still subtle */
+    }
+
+    @keyframes moveDots {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 500px 500px; /* Larger movement range */
+        }
+    }
+
+    /* Custom styles for table cards */
+    .table-container {
+        background-color: rgba(31, 41, 55, 0.7); /* Darker, slightly transparent background for the table container */
+        backdrop-filter: blur(5px); /* Add a subtle blur effect */
+        border: 1px solid rgba(75, 85, 99, 0.5); /* Soft border */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Table specific styles */
+    .transaction-table th {
+        background-color: rgba(55, 65, 81, 0.8); /* Darker header background */
+        color: #E2E8F0; /* Light header text */
+        font-weight: 600;
+        padding: 1rem;
+        text-align: left;
+    }
+
+    .transaction-table td {
+        background-color: rgba(75, 85, 99, 0.4); /* Slightly lighter row background */
+        color: #CBD5E0; /* Light body text */
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(75, 85, 99, 0.5); /* Subtle row separator */
+    }
+
+    .transaction-table tbody tr:hover td {
+        background-color: rgba(96, 106, 119, 0.5); /* Darker hover effect */
+        color: #F8FAFC; /* Brighter text on hover */
+    }
+</style>
+
+<div class="container mx-auto p-6 lg:p-10 rounded-xl shadow-2xl bg-gray-900/60 backdrop-blur-sm mt-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+        <h1 class="text-3xl lg:text-4xl font-extrabold text-white mb-4 sm:mb-0">Your Transactions</h1>
+        <a href="{% url 'export_transactions' %}" class="bg-indigo-600 text-white px-8 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg">
+            Generate Report
+        </a>
+    </div>
+    
+    <div class="table-container rounded-lg shadow-xl overflow-hidden mt-6">
+        <table class="min-w-full transaction-table border-collapse">
+            <thead>
+                <tr>
+                    <th class="rounded-tl-lg">ID</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th class="rounded-tr-lg">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.id }}</td>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.title }}</td>
+                    <td class="{% if transaction.transaction_type == 'income' %}text-green-400{% else %}text-red-400{% endif %}">
+                        ৳{{ transaction.amount|floatformat:2 }}
+                    </td>
+                    <td>
+                        {% if transaction.transaction_type == 'income' %}
+                            Credit
+                        {% else %}
+                            Debit
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-6 text-center text-gray-400">No transactions recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

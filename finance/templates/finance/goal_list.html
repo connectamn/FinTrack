@@ -1,0 +1,97 @@
+{% extends "finance/base.html" %}
+{% block title %}Goal List{% endblock title %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(-45deg, #1A202C, #2D3748, #1A202C, #4A5568);
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite;
+        color: #E2E8F0;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 25px 25px;
+        z-index: -1;
+        animation: moveDots 15s linear infinite;
+        opacity: 0.15;
+    }
+
+    @keyframes moveDots {
+        0% { background-position: 0 0; }
+        100% { background-position: 500px 500px; }
+    }
+
+    .table-container {
+        background-color: rgba(31, 41, 55, 0.7);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .goal-table th {
+        background-color: rgba(55, 65, 81, 0.8);
+        color: #E2E8F0;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: left;
+    }
+
+    .goal-table td {
+        background-color: rgba(75, 85, 99, 0.4);
+        color: #CBD5E0;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(75, 85, 99, 0.5);
+    }
+
+    .goal-table tbody tr:hover td {
+        background-color: rgba(96, 106, 119, 0.5);
+        color: #F8FAFC;
+    }
+</style>
+
+<div class="container mx-auto p-6 lg:p-10 rounded-xl shadow-2xl bg-gray-900/60 backdrop-blur-sm mt-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+        <h1 class="text-3xl lg:text-4xl font-extrabold text-white mb-4 sm:mb-0">Your Goals</h1>
+        <a href="{% url 'goal_add' %}" class="bg-indigo-600 text-white px-8 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg">
+            Add Goal
+        </a>
+    </div>
+
+    <div class="table-container rounded-lg shadow-xl overflow-hidden mt-6">
+        <table class="min-w-full goal-table border-collapse">
+            <thead>
+                <tr>
+                    <th class="rounded-tl-lg">ID</th>
+                    <th>Name</th>
+                    <th>Target Amount</th>
+                    <th class="rounded-tr-lg">Deadline</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for goal in goals %}
+                <tr>
+                    <td>{{ goal.id }}</td>
+                    <td>{{ goal.name }}</td>
+                    <td class="text-indigo-300">৳{{ goal.target_amount|floatformat:2 }}</td>
+                    <td>{{ goal.deadline }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="py-6 text-center text-gray-400">No goals created yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

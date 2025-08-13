@@ -1,73 +1,136 @@
 {% extends "finance/base.html" %}
 {% block title %}Create Goal{% endblock title %}
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8 bg-white p-6 rounded-xl shadow-lg">
+<style>
+    /* Animated gradient background - Consistent with Dashboard & Transaction List */
+    body {
+        background: linear-gradient(-45deg, #1A202C, #2D3748, #1A202C, #4A5568); /* Deeper, subtle dark gradient */
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite; /* Slightly slower and smoother animation */
+        color: #E2E8F0; /* Light text for better contrast on dark background */
+    }
+
+    @keyframes gradientShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    /* Animated dotted overlay with reduced opacity for subtlety - Consistent with Dashboard & Transaction List */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px); /* More subtle white dots */
+        background-size: 25px 25px; /* Slightly larger dots for softer effect */
+        z-index: -1;
+        animation: moveDots 15s linear infinite; /* Slower dot movement */
+        opacity: 0.15; /* Increased opacity slightly for visibility, still subtle */
+    }
+
+    @keyframes moveDots {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 500px 500px; /* Larger movement range */
+        }
+    }
+
+    /* Form container styling */
+    .form-card {
+        background-color: rgba(31, 41, 55, 0.7); /* Darker, slightly transparent background */
+        backdrop-filter: blur(5px); /* Subtle blur effect */
+        border: 1px solid rgba(75, 85, 99, 0.5); /* Soft border */
+    }
+
+    /* Input and Select field styling */
+    .form-input {
+        background-color: rgba(55, 65, 81, 0.5); /* Darker input background */
+        color: #E2E8F0; /* Light text color */
+        border-color: rgba(75, 85, 99, 0.7); /* Soft border color */
+    }
+    .form-input::placeholder {
+        color: #9CA3AF; /* Lighter placeholder text */
+    }
+    .form-input:focus {
+        border-color: #6366F1; /* Indigo focus ring */
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); /* Subtle focus shadow */
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 form-card p-8 rounded-xl shadow-2xl">
         <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Create New Goal</h1>
-            <p class="mt-2 text-sm text-gray-600">Set your savings or financial target</p>
+            <h1 class="text-3xl font-extrabold text-white">Create New Goal</h1>
+            <p class="mt-2 text-md text-gray-300">Set your savings or financial target and track your progress.</p>
         </div>
         <form method="post" class="space-y-6">
             {% csrf_token %}
 
             <!-- Goal Name -->
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Goal Name</label>
-                <input type="text" name="name" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter goal name">
+                <label for="name" class="block text-sm font-medium text-gray-200 mb-1">Goal Name</label>
+                <input type="text" name="name" id="name" required
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="e.g., New Car, Down Payment, Vacation Fund"
+                       value="{{ form.name.value|default:'' }}">
                 {% if form.name.errors %}
                     {% for error in form.name.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Target Amount -->
             <div>
-                <label for="target_amount" class="block text-sm font-medium text-gray-700">Target Amount</label>
-                <input type="number" name="target_amount" id="target_amount" step="0.01" min="0.01" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your target amount">
+                <label for="target_amount" class="block text-sm font-medium text-gray-200 mb-1">Target Amount</label>
+                <input type="number" name="target_amount" id="target_amount" step="0.01" min="0.01" required
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="e.g., 250000.00"
+                       value="{{ form.target_amount.value|default:'' }}">
                 {% if form.target_amount.errors %}
                     {% for error in form.target_amount.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
-            <!-- Current Amount -->
-             <!--
-            <div>
-                <label for="current_amount" class="block text-sm font-medium text-gray-700">Current Amount</label>
-                <input type="number" name="current_amount" id="current_amount" step="0.01" min="0.00" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter current saved amount">
-                {% if form.current_amount.errors %}
-                    {% for error in form.current_amount.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            -->
             <!-- Deadline -->
             <div>
-                <label for="deadline" class="block text-sm font-medium text-gray-700">Deadline</label>
-                <input type="date" name="deadline" id="deadline" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <label for="deadline" class="block text-sm font-medium text-gray-200 mb-1">Deadline</label>
+                <input type="date" name="deadline" id="deadline" required min="{{ today }}"
+                       class="mt-1 block w-full p-3 border rounded-md form-input
+                              focus:ring-indigo-500 focus:border-indigo-500"
+                       value="{{ form.deadline.value|default:'' }}">
                 {% if form.deadline.errors %}
                     {% for error in form.deadline.errors %}
-                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                        <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 {% endif %}
             </div>
 
             <!-- Submit Button -->
             <div class="mt-6">
-                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button type="submit"
+                        class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-lg
+                               hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                               focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">
                     Save Goal
                 </button>
             </div>
 
             <!-- Back to Dashboard -->
-            <div class="mt-4 text-center">
-                <a href="{% url 'dashboard' %}" class="text-blue-600 hover:underline">Back to Dashboard</a>
+            <div class="mt-8 text-center">
+                <a href="{% url 'dashboard' %}"
+                   class="text-blue-400 hover:text-blue-300 hover:underline transition-colors duration-200 text-lg">
+                    ← Back to Dashboard
+                </a>
             </div>
         </form>
     </div>

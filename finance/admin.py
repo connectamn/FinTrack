@@ -1,5 +1,5 @@
 from django.contrib import admin
-from finance.models import Transaction, Goal
+from finance.models import Transaction, Goal, CustomUser
 from import_export import resources
 from import_export.admin import ExportMixin
 
@@ -15,3 +15,4 @@ class TransactionAdmin(ExportMixin, admin.ModelAdmin):
 
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Goal)
+admin.site.register(CustomUser)

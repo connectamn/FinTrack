@@ -1,58 +1,56 @@
 {% extends "finance/base.html" %}
+{% load form_tags %}
 {% block title %}Login{% endblock title %}
+
 {% block content %}
-<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold mb-6 text-center">Finance Tracker</h1>
-    <p class="mt-2 text-sm text-gray-600 text-center" >Please log in to continue</p>
-    <div>
-    <!-- Login Form --> 
-     <form method="post" class="space-y-6">
-        {% csrf_token %}    
-        <!-- Username -->
-        <div class="space-y-5">
-            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" name="username" id="username" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
-            placeholder="Enter your username" required>
-
-            {% if form.username.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        <!-- Password -->
-        <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" name="password" id="password" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
-            placeholder="Enter your password" required>
-
-            {% if form.password.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        <!-- Error Message -->
-        {% if form.non_field_errors %}
-            <div class="text-red-500 text-sm">
-                {% for error in form.non_field_errors%}
-                    <p>{{ error }}</p>
-                {% endfor %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="mb-6 text-center text-3xl font-extrabold text-gray-900">Welcome Back</h2>
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <!-- Username -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">Username</label>
+                    {{ form.username|addclass:"mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if form.username.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Password -->
+                <div>
+                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700">Password</label>
+                    {{ form.password|addclass:"mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if form.password.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                        <div class="text-red-700 text-sm">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-500 font-medium">
+                        Create one here
+                    </a>
+                </p>
             </div>
-        {% endif %}
-
-        <!-- Submit Button -->
-        <div class="mt-6">
-            <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                Sign in
-            </button>
         </div>
-    </form>
-    <div class="mt-4 text-center">
-        <p class="text-sm text-gray-600">Don't have an account? <a href="{% url 'register' %}" class="text-blue-600 hover:underline">Register here</a></p>
-        <p class="text-sm text-gray-600"><a href="{% url 'password_reset' %}" class="text-blue-600 hover:underline">Forget password?</a></p>
     </div>
-
 </div>
-
-
-
 {% endblock content %}
