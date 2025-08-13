@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-cx-ji6lmck)_l1vm!+g%r+06-skwb+6%td%o3x4k2u!6e&ck*u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -138,4 +137,15 @@ AUTH_USER_MODEL = 'finance.CustomUser'
 
 LOGIN_REDIRECT_URL = '/dashboard/'  # Redirect to dashboard after login
 LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login page after logout
+
+
+ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+    "http://localhost",
+    "https://127.0.0.1",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
