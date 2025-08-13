@@ -1,4 +1,4 @@
-# FinExp - Personal Finance Tracker
+# FinTrack - Personal Finance Tracker
 
 A modern, user-friendly personal finance management application built with Django. Track your income, expenses, set financial goals, and visualize your spending patterns with interactive charts.
 
@@ -33,7 +33,7 @@ A modern, user-friendly personal finance management application built with Djang
 ### Step 1: Clone or Download the Project
 ```bash
 git clone <repository-url>
-cd FinExp
+cd FinTrack
 ```
 
 ### Step 2: Create Virtual Environment
@@ -107,7 +107,7 @@ Common categories you can use:
 ## Project Structure
 
 ```
-FinExp/
+FinTrack/
 ├── finance/                 # Main application
 │   ├── templates/          # HTML templates
 │   │   ├── finance/
@@ -120,7 +120,7 @@ FinExp/
 │   ├── forms.py            # Form definitions (CustomUserCreationForm, etc.)
 │   ├── admin.py            # Admin interface configuration
 │   └── urls.py             # URL routing
-├── finexp/                 # Project settings
+├── FinTrack/                 # Project settings
 ├── manage.py               # Django management script
 ├── requirements.txt        # Python dependencies
 ├── README.md               # This file
@@ -173,7 +173,7 @@ To add more fields to the user model:
 ## Deployment
 
 ### For Production
-1. Set `DEBUG = False` in `finexp/settings.py`
+1. Set `DEBUG = False` in `FinTrack/settings.py`
 2. Configure a production database (PostgreSQL recommended)
 3. Set up static file serving
 4. Use a production WSGI server (Gunicorn, uWSGI)

@@ -1,4 +1,4 @@
-# Quick Setup Guide for FinExp
+# Quick Setup Guide for FinTrack
 
 ## 🚀 Get Started in 5 Minutes
 
@@ -7,7 +7,7 @@ Make sure you have Python 3.8+ installed on your system.
 
 ### 2. Download/Clone the Project
 - Download the project files or clone the repository
-- Navigate to the project folder: `cd FinExp`
+- Navigate to the project folder: `cd FinTrack`
 
 ### 3. Set Up Virtual Environment
 ```bash
