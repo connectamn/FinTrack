@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from finance.views import landing_view, RegisterView, DashboardView, TransactionView, TransactionListView, GoalCreateView, GoalListView, ProfileView, AdminDashboardView, export_transactions
 urlpatterns = [
-   path('landing', landing_view, name='landing'),
+   path('', landing_view, name='landing'),
    path('login/', auth_views.LoginView.as_view(template_name='finance/registration/login.html'), name='login'),
    path('register/', RegisterView.as_view(), name='register'),
    path('dashboard/', DashboardView.as_view(), name='dashboard'),
