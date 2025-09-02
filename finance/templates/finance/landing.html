@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>FinTrack | Smart Finance Management</title>
+    <!-- Import Arima Madurai Medium Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap" rel="stylesheet">
     <!-- Page-specific Styles and Animations -->
     <style>
-        /* Main Background Gradient for the body */
+        /* Apply Arima Madurai Medium throughout the page */
         body {
+            font-family: 'Arima Madurai', sans-serif;
             background-color: #f8fafc; /* Light gray fallback */
             background-image: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%); /* Soft blue diagonal gradient */
             background-size: 400% 400%; /* Needed for gradientShift animation */
@@ -274,8 +277,7 @@
             <a href="{% url 'register' %}" class="bg-white text-teal-600 font-bold py-4 px-12 rounded-full shadow-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105">
                 Sign Up for Free Today
             </a>
-            <p class="mt-3 text-sm text-white text-opacity-70">No credit card required. Start your journey in minutes.</p>
-        </div>
+           </div>
     </div>
 </section>
 
